@@ -1,0 +1,24 @@
+{
+    "tasks": [
+        {
+            "type": "cppbuild",
+            "label": "C/C++: gcc.exe сборка активного файла",
+            "command": "C:\\files\\Other\\msys\\mingw64\\bin\\gcc.exe",
+            "args": [
+                "-g", "-ogame", "-Wall", "*.c", "-I/usr/include/SDL2 -D_REENTRANT", "-lSDL2"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}",
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "Задача создана отладчиком."
+        }
+    ],
+    "version": "2.0.0"
+}
