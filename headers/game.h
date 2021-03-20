@@ -320,14 +320,14 @@ int CheckBlockRotate(struct Entity ent)
 
 int CanRotate(int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4)
 {
-	int _x1 =  getXIndex(sh->Blocks[0]->x+x1);
-	int _y1 =  getYIndex(sh->Blocks[0]->y +y1);
+	int _x1 =  getXIndex(sh->Blocks[0]->x + x1);
+	int _y1 =  getYIndex(sh->Blocks[0]->y + y1);
 	int _x2 = getXIndex(sh->Blocks[1]->x + x2);
-	int _y2 =  getYIndex(sh->Blocks[1]->y +y2);
+	int _y2 =  getYIndex(sh->Blocks[1]->y + y2);
 	int _x3 = getXIndex(sh->Blocks[2]->x + x3);
 	int _y3 = getYIndex(sh->Blocks[2]->y + y3);
-	int _x4 = getXIndex(x4 = sh->Blocks[3]->x + x4);
-	int _y4 = getYIndex(_y4 = sh->Blocks[3]->y + y4);
+	int _x4 = getXIndex(sh->Blocks[3]->x + x4);
+	int _y4 = getYIndex(sh->Blocks[3]->y + y4);
 	if(_x1 < 0 || _x2 < 0 || _x3 < 0 || _x4 < 0)
 		return 0;
 	return CheckBlockRotate(field_blocks[_x1][_y1]) && CheckBlockRotate(field_blocks[_x2][_y2])
