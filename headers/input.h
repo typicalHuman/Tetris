@@ -57,7 +57,7 @@ void doInput(void)
 {
 	SDL_Event event;
 	const uint8_t* keystate = SDL_GetKeyboardState(NULL);
-	bool b = keystate[SDL_SCANCODE_LEFT] + keystate[SDL_SCANCODE_RIGHT] + keystate[SDL_SCANCODE_DOWN];
+	bool b = keystate[SDL_SCANCODE_LEFT] + keystate[SDL_SCANCODE_RIGHT] + keystate[SDL_SCANCODE_DOWN] + keystate[ SDL_SCANCODE_A];
     //continuous-response keys
     if(b)
     {

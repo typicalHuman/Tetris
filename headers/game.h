@@ -194,30 +194,37 @@ void SpawnLineShape()
 		sh->Blocks[i] = &field_blocks[_x][_y];
 	}
 	sh->Type  = Line;
+	UpdateFieldIndexes();
 }
 void SpawnTShape()
 {
 	SpawnLineShape();
+	sh->Blocks[0]->y += BLOCK_SIZE*2;
 	sh->Blocks[2]->x += BLOCK_SIZE;
 	sh->Blocks[2]->y -= BLOCK_SIZE;
 	sh->Blocks[3]->x -= BLOCK_SIZE;
 	sh->Blocks[3]->y -= BLOCK_SIZE * 2;
 	sh->Type  = T;
+	UpdateFieldIndexes();
 }
 
 void SpawnLShape()
 {
 	SpawnTShape();
-	sh->Blocks[0]->x += BLOCK_SIZE;
-	sh->Blocks[0]->y += BLOCK_SIZE * 2;
+	sh->Blocks[2]->x += BLOCK_SIZE;
+	for(int i = 0; i <BLOCKS_COUNT; i++)
+		sh->Blocks[i]->y -= BLOCK_SIZE;
 	sh->Type  = L;	
+	UpdateFieldIndexes();
 }
 void SpawnLRShape()
 {
 	SpawnTShape();
-	sh->Blocks[0]->x -= BLOCK_SIZE;
-	sh->Blocks[0]->y += BLOCK_SIZE * 2;
+	sh->Blocks[2]->x -= BLOCK_SIZE;
+	for(int i = 0; i <BLOCKS_COUNT; i++)
+		sh->Blocks[i]->y -= BLOCK_SIZE;
 	sh->Type  = LR;
+	UpdateFieldIndexes();
 }
 
 void SpawnSquareShape()
@@ -229,23 +236,24 @@ void SpawnSquareShape()
 	sh->Blocks[3]->y -= BLOCK_SIZE* 2;
 	sh->Blocks[3]->x += BLOCK_SIZE;
 	sh->Type  = Square;
+	UpdateFieldIndexes();
 }
 
 void SpawnSShape()
 {
 	SpawnTShape();
-	sh->Blocks[0]->y += BLOCK_SIZE * 2;
 	sh->Blocks[3]->y += BLOCK_SIZE;
 	sh->Type  = S;
+	UpdateFieldIndexes();
 }
 
 
 void SpawnZShape()
 {
 	SpawnTShape();
-	sh->Blocks[0]->y += BLOCK_SIZE * 2;
 	sh->Blocks[2]->y += BLOCK_SIZE;
 	sh->Type  = Z;
+	UpdateFieldIndexes();
 }
 
 void SpawnRndShape()
@@ -253,16 +261,18 @@ void SpawnRndShape()
 	int sh_index = rand() % 1;
 	switch (sh_index){
 		case 0:
-		SpawnLineShape(); 
+		SpawnLShape(); 
 			break;
 		case 1:
-		SpawnTShape(); 
+		SpawnTShape();
+		
 			break;
 		case 2:
 		SpawnSquareShape();
 			break;
 		case 3:
-		SpawnLShape(); 
+		SpawnLineShape(); 
+	
 			break;
 		case 4:
 		SpawnLRShape(); 
@@ -334,6 +344,24 @@ int CanRotate(int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4)
 	&& CheckBlockRotate(field_blocks[_x3][_y3]) && CheckBlockRotate(field_blocks[_x4][_y4]);
 }
 
+void Rotate(int rotValue, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4)
+{
+	int canRotate = CanRotate(x1, y1, x2,y2,x3,y3,x4,y4);
+	if(canRotate)
+	{
+	    sh->Blocks[0]->x += x1;
+		sh->Blocks[0]->y += y1;
+		sh->Blocks[1]->x += x2;
+		sh->Blocks[1]->y += y2;
+		sh->Blocks[2]->x += x3;
+		sh->Blocks[2]->y += y3;
+		sh->Blocks[3]->x += x4;
+		sh->Blocks[3]->y += y4;
+		UpdateFieldIndexes();
+		UpdateRotationState(rotValue);
+	}
+}
+
 
 
 
@@ -341,33 +369,52 @@ void RotateLeftLine()
 {
 	if(sh->CurrentRotationState == 0)
 	{
-		int canRot = CanRotate(-25, 25, 0, 0, 25, -25, 50, -50);
-		if(canRot)
-		{
-			sh->Blocks[0]->x += -25;
-			sh->Blocks[0]->y += 25;
-			sh->Blocks[2]->x += 25;
-			sh->Blocks[2]->y += -25;
-			sh->Blocks[3]->x += 50;
-			sh->Blocks[3]->y += -50;
-			UpdateFieldIndexes();
-			UpdateRotationState(1);
-		}
+		Rotate(-1, -25, 25, 0, 0, 25, -25, 50, -50);
 	}
 	else if(sh->CurrentRotationState == 1)
 	{
-		int canRot = CanRotate(25, -25, 0, 0, -25, +25, -50, +50);
-		if(canRot)
-		{
-			sh->Blocks[0]->x += 25;
-			sh->Blocks[0]->y += -25;
-			sh->Blocks[2]->x += -25;
-			sh->Blocks[2]->y += +25;
-			sh->Blocks[3]->x += -50;
-			sh->Blocks[3]->y += +50;
-			UpdateFieldIndexes();
-			UpdateRotationState(-1);
-		}
+		Rotate(-1, 25, -25, 0, 0, -25, +25, -50, +50);
+	}
+}
+void RotateLeftT()
+{
+	int state = sh->CurrentRotationState;
+	if (state == 0)
+	{
+		Rotate(-1, 25, 25, 0, 0, 25, -25, -25, -25);
+	}
+	else if(state == 3)
+	{
+		Rotate(-1, 0, -0, 0, 0, -25, -25, -0, 0);
+	}
+	else if(state == 2)
+	{
+		Rotate(-1, 0, 0, 0, 0, 0, 0, -25,25);
+	}
+	else if(state == 1)
+	{
+		Rotate(-1, 0, 0, 0, 25, 0, 25, 25,-25);
+	}
+}
+
+void RotateLeftL()
+{
+	int state = sh->CurrentRotationState;
+	if (state == 0)
+	{
+		Rotate(-1, 25, -25, 0, 0, 0, -25, -25, 0);
+	}
+	else if(state == 3)
+	{
+		Rotate(-1, -25, 25, 0, 0, 25, -25, -50, 0);
+	}
+	else if(state == 2)
+	{
+		Rotate(-1, 0, 50, 25, 25, 0, 0, -25, -25);
+	}
+	else if(state == 1)
+	{
+		Rotate(-1, 0, -25, 0, 25, 25, 0, 25, 0);
 	}
 }
 
@@ -379,14 +426,16 @@ void RotateLeft()
 		RotateLeftLine();
 		break;
 		case T:
-		break;
-		case Square:
+		RotateLeftT();
 		break;
 		case L:
+		RotateLeftL();
 		break;
 		case LR:
 		break;
 		case Z:
+		break;
+		case S:
 		break;
 		default:
 		break;
