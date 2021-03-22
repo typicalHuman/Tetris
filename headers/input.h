@@ -64,7 +64,9 @@ void doInput(void)
     	int msec = 0, trigger = 110; 
 		clock_t before = clock();
 		if(keystate[SDL_SCANCODE_DOWN])
-		   trigger = 60;
+		   trigger = 50;
+		else if(keystate[SDL_SCANCODE_A] || keystate[SDL_SCANCODE_A])
+			trigger = 80;
 
 		do {
 	    clock_t difference = clock() - before;

@@ -28,12 +28,6 @@ uint32_t callback(uint32_t interval, void* param)
     return 0;
 }
 
-uint32_t callback2(uint32_t interval, void* param)
-{
-
-	
-	return 0;
-}
 int main(int argc, char* argv[])
 {
 
@@ -42,7 +36,6 @@ int main(int argc, char* argv[])
 	blockTexture = loadTexture("C:/users/hp/desktop/tetris/resources/s.bmp");
 	DrawField();
 	SDL_AddTimer(UPDATE_INTERVAL, callback, NULL);
-	SDL_AddTimer(100, callback2, NULL);
 	SpawnRndShape();
 	while (1)
 	{

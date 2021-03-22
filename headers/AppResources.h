@@ -13,4 +13,4 @@
 
 #define BLOCKS_COUNT 4
 
-#define UPDATE_INTERVAL 500
+#define UPDATE_INTERVAL 300
