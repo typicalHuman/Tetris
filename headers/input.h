@@ -2,6 +2,7 @@ extern App app;
 extern int isGameOver;
 extern struct Entity field_blocks[10][20];
 extern int Score;
+extern Shape* sh;
 
 #include <time.h>
 #include <stdint.h>
@@ -9,6 +10,9 @@ extern int Score;
 
 void RotateLeft();
 void RotateRight();
+void SpawnRndShape();
+void UpdateScore();
+void UpdateBurningStatus(char* status);
 
 
 
@@ -37,14 +41,11 @@ void doKeyUp(SDL_KeyboardEvent *event)
 		if(event->keysym.scancode == SDL_SCANCODE_R && isGameOver)
 		{
 			isGameOver = 0;
-			for(int i = 0; i < FIELD_HEIGHT; i++)
-			{
-				for(int k =0; k < FIELD_WIDTH; k++)
-				{
-					field_blocks[i][k].texture = NULL;
-					Score = 0;
-				}
-			}
+			Score = 0;
+			memset(field_blocks, 0, sizeof(field_blocks));
+			SpawnRndShape();
+			UpdateScore();
+			UpdateBurningStatus(NULL);
 		}
 	}
 }

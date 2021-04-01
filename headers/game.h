@@ -149,12 +149,12 @@ void MoveShapeDown()
 	{
 	   for(int i = 0; i < BLOCKS_COUNT; i++)
 	   	sh->Blocks[i]->y += BLOCK_SIZE;
-	   UpdateFieldIndexes();
+	UpdateFieldIndexes();
 	}
-	else if(!can)
+	else
 	{
 		CheckForBurnings();
-	  SpawnRndShape();
+	 	SpawnRndShape();
 	}
 }
 
@@ -304,42 +304,39 @@ void UpdateScore()
 	char s2[100];
     strcat(s,itoa(Score,s2,10));
 	 Message = GetMessageTexture(s);
- //create a rect
-	Message_rect.x = 20;  //controls the rect's x coordinate 
-	Message_rect.y = 20; // controls the rect's y coordinte
-	Message_rect.w = 150; // controls the width of the rect
-	Message_rect.h = 50; // controls the height of the rect
+
+	Message_rect.x = 20;  
+	Message_rect.y = 20; 
+	Message_rect.w = 150; 
+	Message_rect.h = 50; 
 }
 
 void UpdateBurningStatus(char* status)
 {
-
 	B_Message = GetMessageTexture(status);
- //create a rect
-	B_Message_rect.x = 400;  //controls the rect's x coordinate 
-	B_Message_rect.y = 20; // controls the rect's y coordinte
-	B_Message_rect.w = 150; // controls the width of the rect
-	B_Message_rect.h = 50; // controls the height of the rect
+	B_Message_rect.x = 400;  
+	B_Message_rect.y = 20;
+	B_Message_rect.w = 150; 
+	B_Message_rect.h = 50; 
 }
 
 void UpdateNextMessage()
 {
 	C_Message = GetMessageTexture("NEXT");
- //create a rect
-	C_Message_rect.x = 475;  //controls the rect's x coordinate 
-	C_Message_rect.y = 260; // controls the rect's y coordinte
-	C_Message_rect.w = 80; // controls the width of the rect
-	C_Message_rect.h = 50; // controls the height of the rect
+	C_Message_rect.x = 475;  
+	C_Message_rect.y = 260; 
+	C_Message_rect.w = 80; 
+	C_Message_rect.h = 50; 
 }
 
 void SetGameOverMessage()
 {
 	D_Message = GetMessageTexture("GAME OVER");
- //create a rect
-	D_Message_rect.x = 235;  //controls the rect's x coordinate 
-	D_Message_rect.y = 260; // controls the rect's y coordinte
-	D_Message_rect.w = 180; // controls the width of the rect
-	D_Message_rect.h = 80; // controls the height of the rect
+
+	D_Message_rect.x = 235;  
+	D_Message_rect.y = 260; 
+	D_Message_rect.w = 180; 
+	D_Message_rect.h = 80; 
 }
 
 void RenderAllMessages()

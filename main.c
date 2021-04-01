@@ -23,7 +23,6 @@ int main(int argc, char* argv[])
     font = TTF_OpenFont("C:/users/hp/desktop/tetris/resources/font.ttf", 16); //this opens a font style and sets a size
 	UpdateScore();
 	UpdateNextMessage();
-
 	while (1)
 	{
 		prepareScene();
