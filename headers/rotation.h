@@ -48,7 +48,7 @@ void Rotate(int rotValue, int x1, int y1, int x2, int y2, int x3, int y3, int x4
 
 
 
-void RotateLeftLine()
+void RotateLine()
 {
 	if(sh->CurrentRotationState == 0)
 	{
@@ -81,7 +81,7 @@ void RotateLeftT()
 }
 
 
-void RotateLeftL()
+void RotateLeftLR()
 {
 	int state = sh->CurrentRotationState;
 	if (state == 0)
@@ -102,7 +102,7 @@ void RotateLeftL()
 	}
 }
 
-void RotateLeftLR()
+void RotateLeftL()
 {
 	int state = sh->CurrentRotationState;
 	if (state == 0)
@@ -123,7 +123,7 @@ void RotateLeftLR()
 	}
 }
 
-void RotateLeftZ()
+void RotateZ()
 {
 	if(sh->CurrentRotationState == 0)
 	{
@@ -135,12 +135,24 @@ void RotateLeftZ()
 	}
 }
 
+void RotateS()
+{
+	if(sh->CurrentRotationState == 0)
+	{
+		Rotate(-1, 0, -50, 0, 0, 0,0, -50, 0);
+	}
+	else if(sh->CurrentRotationState == 1)
+	{
+		Rotate(-1, 0, 50, 50, 0, 0, 0, 0, 0);
+	}
+}
+
 void RotateLeft()
 {
 	switch(sh->Type)
 	{
 		case Line:
-		RotateLeftLine();
+		RotateLine();
 		break;
 		case T:
 		RotateLeftT();
@@ -152,17 +164,105 @@ void RotateLeft()
 		RotateLeftLR();
 		break;
 		case Z:
-		RotateLeftZ();
+		RotateZ();
 		break;
 		case S:
+		RotateS();
 		break;
 		default:
 		break;
 	}
 }
+
+
+void RotateRightT()
+{
+	int state = sh->CurrentRotationState;
+	if (state == 0)
+	{
+		Rotate(1, 0, 0, 0, -25, 0, -25, -25, 25);
+	}
+	else if(state == 3)
+	{
+		Rotate(1, -25, 25, 0, 0, 0, 0, -0, 0);
+	}
+	else if(state == 2)
+	{
+		Rotate(1, 25, 25, 0, 0, -0, 0, 0, 0);
+	}
+	else if(state == 1)
+	{
+		Rotate(1, 0, 0, 0, 0, 0, 0, 25,-25);
+	}
+}
+
+void RotateRightLR()
+{
+	int state = sh->CurrentRotationState;
+	if (state == 0)
+	{
+		Rotate(1, 0, 25, 0, -25, -25, 0, -25, 0);
+	}
+	else if(state == 3)
+	{
+		Rotate(1, 25, 25, 0, 0, -25, -25, 0, 50);
+	}
+	else if(state == 2)
+	{
+		Rotate(1, 25, -25, 25, -25, 0, 0, 0, -50);
+	}
+	else if(state == 1)
+	{
+		Rotate(1, 0, -25, -25, 0, 0, 0, 25, -25);
+	}
+}
+
+void RotateRightL()
+{
+	int state = sh->CurrentRotationState;
+	if (state == 0)
+	{
+		Rotate(1, 25, -25, 0, -50, 0, 0, -25, 25);
+	}
+	else if(state == 3)
+	{
+		Rotate(1, -25, 25, 0, 0, -25, 0, 0, -25);
+	}
+	else if(state == 2)
+	{
+		Rotate(1, 25, 25, 0, 0, -25, 0, 0, 25);
+	}
+	else if(state == 1)
+	{
+		Rotate(1, 50, 0, 25, 25, 0, 0, -25, -25);
+	}
+}
+
 void RotateRight()
 {
-
+	switch(sh->Type)
+	{
+		case Line:
+		RotateLine();
+		break;
+		case T:
+		RotateRightT();
+		break;
+		case L:
+		RotateRightL();
+		break;
+		case LR:
+		RotateRightLR();
+		break;
+		case Z:
+		RotateZ();
+		break;
+		case S:
+		RotateS();
+		break;
+		default:
+		break;
+	}
 }
 
 void UpdateRotationState(int value)

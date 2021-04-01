@@ -13,4 +13,9 @@
 
 #define BLOCKS_COUNT 4
 
-#define UPDATE_INTERVAL 300
+#define MOVING_DOWN_INTERVAL 250
+
+#define SINGLE "SINGLE"
+#define DOUBLE "DOUBLE"
+#define TRIPLE "TRIPLE"
+#define TETRIS "TETRIS"

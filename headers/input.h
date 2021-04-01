@@ -1,10 +1,16 @@
 extern App app;
+extern int isGameOver;
+extern struct Entity field_blocks[10][20];
+extern int Score;
 
 #include <time.h>
 #include <stdint.h>
 #include <stdbool.h>
 
 void RotateLeft();
+void RotateRight();
+
+
 
 void cleanKeys()
 {
@@ -26,6 +32,20 @@ void doKeyUp(SDL_KeyboardEvent *event)
 			app.right = 0;
 		 if(event->keysym.scancode == SDL_SCANCODE_A)
 		     RotateLeft();
+	 	 else if(event->keysym.scancode == SDL_SCANCODE_S)
+		     RotateRight();
+		if(event->keysym.scancode == SDL_SCANCODE_R && isGameOver)
+		{
+			isGameOver = 0;
+			for(int i = 0; i < FIELD_HEIGHT; i++)
+			{
+				for(int k =0; k < FIELD_WIDTH; k++)
+				{
+					field_blocks[i][k].texture = NULL;
+					Score = 0;
+				}
+			}
+		}
 	}
 }
 
@@ -52,6 +72,9 @@ void doKeyDown(SDL_KeyboardEvent *event)
 		}
 	}
 }
+
+
+
 
 void doInput(void)
 {

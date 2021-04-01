@@ -1,7 +1,10 @@
 #include "common.h"
 #include "SDL2/SDL_image.h"
+#include <SDL2/SDL_ttf.h>
 
 extern App app;
+TTF_Font* font;
+SDL_Color White  = {255, 255, 255};
 //Close SDL window with destroyng all objects.
 void CloseSDLWindow()
 {
@@ -68,4 +71,10 @@ void blit(SDL_Texture *texture, int x, int y)
 	
 	SDL_RenderCopy(app.renderer, texture, NULL, &dest);
 	}
+}
+
+SDL_Texture* GetMessageTexture(char* text)
+{
+	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, text, White); // as TTF_RenderText_Solid could only be used on SDL_Surface then you have to create the surface first
+	return SDL_CreateTextureFromSurface(app.renderer, surfaceMessage); //now you can convert it into a texture
 }

@@ -16,8 +16,10 @@ void SetFieldFromTemp(struct Entity temp_field[FIELD_WIDTH][FIELD_HEIGHT]);
 int IsShapesBlock(int x, int y);
 int CheckBlockMove(int left, int right, int down, int i);
 void SpawnRndShape();
-
-
+void UpdateScore();
+void UpdateBurningStatus(char* burningStatus);
+void SetRestartInstructionMessage();
+void SetGameOverMessage();
 ///
 ///BG field methods
 ///
@@ -44,6 +46,63 @@ void UpdateField()
 			blit(field[i][k].texture, field[i][k].x, field[i][k].y);
 		}
 	}
+}
+
+void CheckForBurnings()
+{
+	int burningsCount = 0;
+	int lastY = 0;
+	for(int i = 0; i < FIELD_HEIGHT; i++)
+	{
+		int isBurn = 1;
+		for(int k = 0; k < FIELD_WIDTH; k++)
+		{
+			if(field_blocks[k][i].texture == NULL)
+			{
+				isBurn = 0;
+				break;
+			}
+		}
+		if(isBurn)
+		{
+			burningsCount++;
+			lastY = i;
+			for(int j = 0; j < FIELD_WIDTH; j++)
+				field_blocks[j][i].texture = NULL;
+		}
+	}
+	if(burningsCount > 0)
+	{
+		for(int i = lastY-1; i >= 0; i--)
+		{
+			for(int k = FIELD_WIDTH -1; k >= 0 ;k--)
+			{
+				if(field_blocks[k][i].texture != NULL)
+					field_blocks[k][i].y += BLOCK_SIZE * burningsCount;
+			}
+		}
+		char* burningStatus = TETRIS;
+		if(burningsCount == 1)
+		{
+			Score+=40;
+			burningStatus = SINGLE;
+		}
+		else if(burningsCount == 2)
+		{
+			Score+= 100;
+			burningStatus = DOUBLE;
+		}
+		else if(burningsCount == 3)
+		{
+			Score+= 300;
+			burningStatus = TRIPLE;
+		}
+		else
+			Score += 1200;
+		UpdateScore();
+		UpdateBurningStatus(burningStatus);
+	}
+	UpdateFieldIndexes();
 }
 
 
@@ -74,7 +133,10 @@ void MoveShape()
 	if(can)
 		UpdateFieldIndexes();
 	else if(!can && app.down)
+	{
+		CheckForBurnings();
 		SpawnRndShape();
+	}
 }
 int CanMove(int left, int right, int down)
 {
@@ -90,7 +152,10 @@ void MoveShapeDown()
 	   UpdateFieldIndexes();
 	}
 	else if(!can)
+	{
+		CheckForBurnings();
 	  SpawnRndShape();
+	}
 }
 
 
@@ -150,12 +215,12 @@ int CheckBlockMove(int left, int right, int down, int i)
 		_x = getXIndex(sh->Blocks[i]->x + BLOCK_SIZE);
 		_y = getYIndex(sh->Blocks[i]->y);
 	}
-	else if(left)
+	if(left)
 	{
 		_x = getXIndex(sh->Blocks[i]->x - BLOCK_SIZE);
 		_y = getYIndex(sh->Blocks[i]->y);
 	}
-	else if(down)
+	if(down)
 	{
 		_x = getXIndex(sh->Blocks[i]->x);
 		_y = getYIndex(sh->Blocks[i]->y + BLOCK_SIZE);
@@ -188,7 +253,7 @@ int GetYIndex(struct Entity _ent)
 int getYIndex(int y)
 {
 int res = (((y - TOP_FIELD_BORDER) / BLOCK_SIZE) - 2);
-   if(res < 0)
+   if(res < 0 || y > BOTTOM_FIELD_BORDER)
    	 return -1;
 	return res;
 }
@@ -232,3 +297,140 @@ void SetFieldFromTemp(struct Entity temp_field[FIELD_WIDTH][FIELD_HEIGHT])
 		}
 	}
 }
+void UpdateScore()
+{
+	char s[100];
+   memcpy(s, SCORE_STRING,100);
+	char s2[100];
+    strcat(s,itoa(Score,s2,10));
+	 Message = GetMessageTexture(s);
+ //create a rect
+	Message_rect.x = 20;  //controls the rect's x coordinate 
+	Message_rect.y = 20; // controls the rect's y coordinte
+	Message_rect.w = 150; // controls the width of the rect
+	Message_rect.h = 50; // controls the height of the rect
+}
+
+void UpdateBurningStatus(char* status)
+{
+
+	B_Message = GetMessageTexture(status);
+ //create a rect
+	B_Message_rect.x = 400;  //controls the rect's x coordinate 
+	B_Message_rect.y = 20; // controls the rect's y coordinte
+	B_Message_rect.w = 150; // controls the width of the rect
+	B_Message_rect.h = 50; // controls the height of the rect
+}
+
+void UpdateNextMessage()
+{
+	C_Message = GetMessageTexture("NEXT");
+ //create a rect
+	C_Message_rect.x = 475;  //controls the rect's x coordinate 
+	C_Message_rect.y = 260; // controls the rect's y coordinte
+	C_Message_rect.w = 80; // controls the width of the rect
+	C_Message_rect.h = 50; // controls the height of the rect
+}
+
+void SetGameOverMessage()
+{
+	D_Message = GetMessageTexture("GAME OVER");
+ //create a rect
+	D_Message_rect.x = 235;  //controls the rect's x coordinate 
+	D_Message_rect.y = 260; // controls the rect's y coordinte
+	D_Message_rect.w = 180; // controls the width of the rect
+	D_Message_rect.h = 80; // controls the height of the rect
+}
+
+void RenderAllMessages()
+{
+		SDL_RenderCopy(app.renderer, Message, NULL, &Message_rect); 
+		SDL_RenderCopy(app.renderer, B_Message, NULL, &B_Message_rect); 
+		SDL_RenderCopy(app.renderer, C_Message, NULL, &C_Message_rect);
+		if(isGameOver)
+			SDL_RenderCopy(app.renderer, D_Message, NULL, &D_Message_rect);  
+}
+
+void DrawLine()
+{
+	for(int i = 0; i < BLOCKS_COUNT; i++)
+	{
+		struct Entity* ent = (struct Entity*)malloc(sizeof(struct Entity));
+		ent->texture = blockTexture;
+		ent->x = 500;
+		ent->y = BLOCK_SIZE*i + 300;
+		NextShape[i] = *ent;
+	}
+}
+void DrawT()
+{
+	DrawLine();
+	NextShape[0].y += BLOCK_SIZE*2;
+	NextShape[2].x += BLOCK_SIZE;
+	NextShape[2].y -= BLOCK_SIZE;
+	NextShape[3].x -= BLOCK_SIZE;
+	NextShape[3].y -= BLOCK_SIZE * 2;
+}
+
+void DrawL()
+{
+	DrawT();
+	NextShape[0].x -= BLOCK_SIZE;
+}
+void DrawLR()
+{
+	DrawT();
+	NextShape[0].x += BLOCK_SIZE;
+}
+
+void DrawSquare()
+{
+	DrawLine();
+	NextShape[0].y += BLOCK_SIZE;
+	NextShape[1].x += BLOCK_SIZE;
+	NextShape[3].y -= BLOCK_SIZE;
+	NextShape[3].x += BLOCK_SIZE;
+}
+
+void DrawS()
+{
+	DrawT();
+	NextShape[3].y += 25;
+}
+
+
+void DrawZ()
+{	
+	DrawT();
+	NextShape[2].y += BLOCK_SIZE;
+}
+void RenderNextShape()
+{
+	switch(NextShapeType)
+	{
+			case Line:
+		DrawLine(); 
+			break;
+		case T:
+		DrawT();
+			break;
+		case Square:
+		DrawSquare();
+			break;
+		case L:
+		DrawL();
+			break;
+		case LR:
+		DrawLR();
+			break;
+		case Z:
+		DrawZ();
+			break;
+	    default:
+		DrawS();
+			break;
+	}
+	for(int i = 0; i < BLOCK_SIZE; i++)
+	 blit(NextShape[i].texture, NextShape[i].x,  NextShape[i].y);
+}
+

@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}\\game.exe",
-            "args": ["-g", "-ogame", "-Wall", "*.c", "`sdl2-config --cflags --libs`"],
+            "args": ["-g", "-ogame", "-Wall", "*.c", "`sdl2-config --cflags --libs`", "-lSDL2_ttf" ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

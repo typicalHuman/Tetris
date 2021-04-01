@@ -1,7 +1,10 @@
 
 int GetXIndex(struct Entity ent);
 int GetYIndex(struct Entity ent);
-
+enum ShapeType GetRandomShapeType(void);
+void SetRotationsCount();
+void SetGameOverMessage();
+int CanMove(int left, int right, int down);
 void SpawnLineShape()
 {
 	if(sh)
@@ -39,22 +42,22 @@ void SpawnTShape()
 	UpdateFieldIndexes();
 }
 
-void SpawnLShape()
+void SpawnLRShape()
 {
 	SpawnTShape();
 	sh->Blocks[2]->x += BLOCK_SIZE;
 	for(int i = 0; i <BLOCKS_COUNT; i++)
 		sh->Blocks[i]->y -= BLOCK_SIZE;
-	sh->Type  = L;	
+	sh->Type  = LR;	
 	UpdateFieldIndexes();
 }
-void SpawnLRShape()
+void SpawnLShape()
 {
 	SpawnTShape();
 	sh->Blocks[2]->x -= BLOCK_SIZE;
 	for(int i = 0; i <BLOCKS_COUNT; i++)
 		sh->Blocks[i]->y -= BLOCK_SIZE;
-	sh->Type  = LR;
+	sh->Type  = L;
 	UpdateFieldIndexes();
 }
 
@@ -87,39 +90,78 @@ void SpawnZShape()
 	UpdateFieldIndexes();
 }
 
+
+
 void SpawnRndShape()
 {
-	int sh_index = rand() % 1;
-	switch (sh_index){
-		case 0:
-		SpawnZShape(); 
-			break;
-		case 1:
-		SpawnTShape();
-			break;
-		case 2:
-		SpawnSquareShape();
-			break;
-		case 3:
-		SpawnLShape();
-			break;
-		case 4:
-		SpawnLRShape();
-			break;
-		case 5:
-		
-		SpawnLineShape(); 
-			break;
-	    default:
-		SpawnSShape(); 
-			break;
+	if(!isGameOver)
+	{
+		if(!NextShapeType)
+			NextShapeType = GetRandomShapeType();
+		enum ShapeType currentShapeType = NextShapeType;
+		NextShapeType = GetRandomShapeType();
+		switch (currentShapeType){
+			case Line:
+			SpawnLineShape(); 
+				break;
+			case T:
+			SpawnTShape();
+				break;
+			case Square:
+			SpawnSquareShape();
+				break;
+			case L:
+			SpawnLShape();	
+				break;
+			case LR:
+			SpawnLRShape();
+				break;
+			case Z:
+			SpawnZShape(); 
+				break;
+			default:
+			SpawnSShape(); 
+				break;
 
+		}
+		if(!CanMove(1, 1, 1))
+		{
+			SetGameOverMessage();
+			isGameOver = 1;
+		}
+		SetRotationsCount();
 	}
-	if(sh->Type == Line || sh->Type == S || sh->Type == Z )
-		sh->RotationsCount = 2;
-	else if(sh->Type == Square)
-		sh->RotationsCount = 0;
-	else
-		sh->RotationsCount = 4;
-	sh->CurrentRotationState = 0;
+}
+
+void SetRotationsCount()
+{
+		if(sh->Type == Line || sh->Type == S || sh->Type == Z )
+			sh->RotationsCount = 2;
+		else if(sh->Type == Square)
+			sh->RotationsCount = 0;
+		else
+			sh->RotationsCount = 4;
+		sh->CurrentRotationState = 0;
+}
+
+enum ShapeType GetRandomShapeType(void)
+{
+	int sh_index = rand() % 7;
+	switch(sh_index)
+	{
+		case 0:
+		return Line;
+		case 1:
+		return T;
+		case 2:
+		return Square;
+		case 3:
+		return L;
+		case 4:
+		return LR;
+		case 5:
+		return Z;
+		default:
+		return S;
+	}
 }

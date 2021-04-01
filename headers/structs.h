@@ -13,7 +13,7 @@ struct Entity{
 	SDL_Texture *texture;
 };
 
-enum ShapeType {Line, T, Square, L, LR, Z, S};
+enum ShapeType {Line = 1, T, Square, L, LR, Z, S};
 
 typedef struct
 {
